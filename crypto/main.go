@@ -1,4 +1,4 @@
-package main
+package crypto
 
 import (
 	"crypto/rand"
@@ -10,26 +10,20 @@ import (
 	"golang.org/x/crypto/hkdf"
 )
 
-type Keypair struct {
-	PrivateKey [32]byte
-	PublicKey  [32]byte
-}
-
-func generateKeypair() (Keypair, error) {
-	var kp Keypair
-
-	_, err := rand.Read(kp.PrivateKey[:])
+func GeneratePrivatePublicKeys() ([32]byte, [32]byte, error) {
+	var privateKey, publicKey [32]byte
+	_, err := rand.Read(privateKey[:])
 	if err != nil {
-		return Keypair{}, fmt.Errorf("failed to generate private key: %w", err)
+		return publicKey, privateKey, fmt.Errorf("Failed to Generate Private Key: %w", err)
 	}
 
-	pub, err := curve25519.X25519(kp.PrivateKey[:], curve25519.Basepoint)
+	publicKeyStr, err := curve25519.X25519(privateKey[:], curve25519.Basepoint)
 	if err != nil {
-		return Keypair{}, fmt.Errorf("failed to derive public key: %w", err)
+		return publicKey, privateKey, fmt.Errorf("Failed to Derive the Public Key: %w", err)
 	}
 
-	copy(kp.PublicKey[:], pub)
-	return kp, nil
+	copy(publicKey[:], publicKeyStr)
+	return publicKey, privateKey, nil
 }
 
 func hashKeys(secret []byte) ([32]byte, [32]byte, error) {
@@ -43,25 +37,4 @@ func hashKeys(secret []byte) ([32]byte, [32]byte, error) {
 	reader.Read(serverKey[:])
 
 	return clientKey, serverKey, nil
-}
-
-func main() {
-	client, _ := generateKeypair()
-	server, _ := generateKeypair()
-
-	fmt.Printf("Client public key: %x\n", client.PublicKey)
-	fmt.Printf("Server public key: %x\n", server.PublicKey)
-
-	secret, _ := curve25519.X25519(client.PrivateKey[:], server.PublicKey[:])
-	fmt.Printf("Shared Secret:%x\n", secret)
-
-	clientKey, serverKey, err := hashKeys(secret)
-	if err != nil {
-		fmt.Println("failed to derive keys:", err)
-		return
-	}
-
-	fmt.Printf("Client key: %x\n", clientKey)
-	fmt.Printf("Server key: %x\n", serverKey)
-
 }
