@@ -9,22 +9,21 @@ import (
 func listen(conn net.Conn) {
 	buf := make([]byte, 1024)
 	n, _ := conn.Read(buf)
-	fmt.Println("Client:", string(buf[:n]))
+	fmt.Println("Server:", string(buf[:n]))
 }
 
 func message(conn net.Conn) {
 	var message string
 	fmt.Scanln(&message)
 	fmt.Print("\033[1A\033[2K")
-	fmt.Println("Server:", message)
-	fmt.Fprintf(conn, message)
+	fmt.Println("Client:", message)
+	fmt.Fprintf(conn, "%s", message)
 }
 
 func main() {
 	var wg sync.WaitGroup
 
-	ln, _ := net.Listen("tcp", ":8080")
-	conn, _ := ln.Accept()
+	conn, _ := net.Dial("tcp", "127.0.0.1:8080")
 	defer conn.Close()
 
 	wg.Add(2)
