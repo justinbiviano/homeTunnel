@@ -8,23 +8,23 @@ import (
 	"golang.org/x/crypto/curve25519"
 )
 
-func StartUp(address string) ([32]byte, [32]byte, error) {
+func StartUpServer(port string) ([32]byte, [32]byte, error) {
 	public, private, err := crypto.GeneratePrivatePublicKeys()
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	conn, err := communication.NetDial(address)
-	if err != nil {
-		return [32]byte{}, [32]byte{}, err
-	}
-
-	err = communication.Send(conn, public)
+	conn, err := communication.NetListen(port)
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
 
 	recived, err := communication.Read(conn)
+	if err != nil {
+		return [32]byte{}, [32]byte{}, err
+	}
+
+	err = communication.Send(conn, public)
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
@@ -45,9 +45,10 @@ func StartUp(address string) ([32]byte, [32]byte, error) {
 }
 
 func main() {
-	clientKey, serverKey, err := StartUp("127.0.0.1:8080")
+	clientKey, serverKey, err := StartUpServer(":8080")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(clientKey, serverKey)
+	fmt.Println(clientKey)
+	fmt.Println(serverKey)
 }

@@ -35,7 +35,7 @@ func NetListen(port string) (net.Conn, error) {
 
 	conn, err := ln.Accept()
 	if err != nil {
-		return nil, fmt.Errorf("Failed Listening: %w", err)
+		return nil, fmt.Errorf("Failed Accpeting Conn: %w", err)
 	}
 
 	return conn, nil
