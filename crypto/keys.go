@@ -29,7 +29,7 @@ func GeneratePrivatePublicKeys() ([32]byte, [32]byte, error) {
 	return publicKey, privateKey, nil
 }
 
-func hashKeys(secret []byte) ([32]byte, [32]byte, error) {
+func HashKeys(secret []byte) ([32]byte, [32]byte, error) {
 	// Hashes Keys Using BLAKE2S.
 	reader := hkdf.New(func() hash.Hash {
 		h, _ := blake2s.New256(nil)

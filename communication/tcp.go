@@ -5,29 +5,29 @@ import (
 	"net"
 )
 
-func netDial(address string) (net.Conn, error) {
+func NetDial(address string) (net.Conn, error) {
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		return conn, fmt.Errorf("Failed Dialing Connection: %w", err)
 	}
-	defer conn.Close()
 	return conn, nil
 }
 
-func read(conn net.Conn) (string, error) {
-	buf := make([]byte, 1024)
-	n, err := conn.Read(buf)
+func Read(conn net.Conn) ([32]byte, error) {
+	var buf [32]byte
+	_, err := conn.Read(buf[:])
 	if err != nil {
-		return string(buf), err
+		return [32]byte{}, err
 	}
-	return string(buf[:n]), nil
+	return buf, nil
 }
 
-func send(conn net.Conn, message string) {
-	fmt.Fprintf(conn, "%s", message)
+func Send(conn net.Conn, message [32]byte) error {
+	_, err := conn.Write(message[:])
+	return err
 }
 
-func netListen(port string) (net.Conn, error) {
+func NetListen(port string) (net.Conn, error) {
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return nil, fmt.Errorf("Failed Listening: %w", err)
@@ -38,6 +38,5 @@ func netListen(port string) (net.Conn, error) {
 		return nil, fmt.Errorf("Failed Listening: %w", err)
 	}
 
-	defer conn.Close()
 	return conn, nil
 }
