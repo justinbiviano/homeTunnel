@@ -2,22 +2,20 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/justinbiviano/homeTunnel/communication"
 	"github.com/justinbiviano/homeTunnel/crypto"
 	"golang.org/x/crypto/curve25519"
 )
 
-func StartUpServer(port string) ([32]byte, [32]byte, error) {
+func StartUpServer(ln net.Listener) ([32]byte, [32]byte, error) {
 	public, private, err := crypto.GeneratePrivatePublicKeys()
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	conn, err := communication.NetListen(port)
-	if err != nil {
-		return [32]byte{}, [32]byte{}, err
-	}
+	conn, err := communication.NetAccept(ln)
 
 	recived, err := communication.Read(conn)
 	if err != nil {
@@ -31,7 +29,7 @@ func StartUpServer(port string) ([32]byte, [32]byte, error) {
 
 	secret, err := curve25519.X25519(private[:], recived[:])
 	if err != nil {
-		return [32]byte{}, [32]byte{}, err
+		return [32]byte{}, [32]byte{}, fmt.Errorf("Failed finding secrete from keys: %w", err)
 	}
 
 	conn.Close()
@@ -45,10 +43,20 @@ func StartUpServer(port string) ([32]byte, [32]byte, error) {
 }
 
 func main() {
-	clientKey, serverKey, err := StartUpServer(":8080")
+	// Creates Net Listener
+	ln, err := communication.NetListen(":8080")
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
-	fmt.Println(clientKey)
-	fmt.Println(serverKey)
+
+	// Handels in loop all connections
+	for {
+		clientKey, serverKey, err := StartUpServer(ln)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(clientKey)
+		fmt.Println(serverKey)
+	}
 }
