@@ -31,7 +31,7 @@ func StartUpClient(address string) ([32]byte, [32]byte, error) {
 
 	secret, err := curve25519.X25519(private[:], recived[:])
 	if err != nil {
-		return [32]byte{}, [32]byte{}, err
+		return [32]byte{}, [32]byte{}, fmt.Errorf("Failed finding secrete from keys: %w", err)
 	}
 
 	conn.Close()
@@ -45,7 +45,8 @@ func StartUpClient(address string) ([32]byte, [32]byte, error) {
 }
 
 func main() {
-	clientKey, serverKey, err := StartUpClient("127.0.0.1:8080")
+	var address string = "127.0.0.1:8080"
+	clientKey, serverKey, err := StartUpClient(address)
 	if err != nil {
 		fmt.Println(err)
 	}

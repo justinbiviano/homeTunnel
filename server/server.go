@@ -44,13 +44,14 @@ func StartUpServer(ln net.Listener) ([32]byte, [32]byte, error) {
 
 func main() {
 	// Creates Net Listener
-	ln, err := communication.NetListen(":8080")
+	var port string = ":8080"
+	ln, err := communication.NetListen(port)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	// Handels in loop all connections
+	// Handels and loops to all connections
 	for {
 		clientKey, serverKey, err := StartUpServer(ln)
 		if err != nil {
