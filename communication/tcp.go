@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func tcpNetDial(address string) (net.Conn, error) {
+func TcpNetDial(address string) (net.Conn, error) {
 	// Dialing Conn From Client
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
@@ -14,7 +14,7 @@ func tcpNetDial(address string) (net.Conn, error) {
 	return conn, nil
 }
 
-func tcpNetListen(port string) (net.Listener, error) {
+func TcpNetListen(port string) (net.Listener, error) {
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return nil, fmt.Errorf("Failed Listening: %w", err)
@@ -22,7 +22,7 @@ func tcpNetListen(port string) (net.Listener, error) {
 	return ln, nil
 }
 
-func tcpNetAccept(ln net.Listener) (net.Conn, error) {
+func TcpNetAccept(ln net.Listener) (net.Conn, error) {
 	conn, err := ln.Accept()
 	if err != nil {
 		return nil, fmt.Errorf("Failed Accpeting Conn: %w", err)

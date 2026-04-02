@@ -6,7 +6,7 @@ import (
 )
 
 // Dial a connection to Server ONLY from client (Client Side)
-func udpDial(address string) (net.Conn, error) {
+func UdpDial(address string) (net.Conn, error) {
 	conn, err := net.Dial("udp", address)
 	if err != nil {
 		return conn, fmt.Errorf("Failed to connect to %s over udp: %w", address, err)
@@ -15,7 +15,7 @@ func udpDial(address string) (net.Conn, error) {
 }
 
 // Binds Port (Server Side)
-func udpListen(port string) (net.PacketConn, error) {
+func UdpListen(port string) (net.PacketConn, error) {
 	conn, err := net.ListenPacket("udp", port)
 	if err != nil {
 		return conn, fmt.Errorf("Failed to connect on port %s over udp: %w", port, err)
@@ -23,12 +23,12 @@ func udpListen(port string) (net.PacketConn, error) {
 	return conn, nil
 }
 
-// Reads Packets (Serverside)
-func udpRead(conn net.PacketConn, buf []byte) (int, net.Addr, error) {
+// // Reads Packets (Serverside)
+// func UdpRead(conn net.PacketConn, buf []byte) (int, net.Addr, error) {
 
-}
+// }
 
-// Sends packets (serverside)
-func udpSend(conn net.PacketConn, buf []byte, addr net.Addr) error {
+// // Sends packets (serverside)
+// func UdpSend(conn net.PacketConn, buf []byte, addr net.Addr) error {
 
-}
+// }

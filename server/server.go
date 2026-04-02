@@ -15,7 +15,7 @@ func StartUpServer(ln net.Listener) ([32]byte, [32]byte, error) {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	conn, err := communication.NetAccept(ln)
+	conn, err := communication.TcpNetAccept(ln)
 
 	recived, err := communication.Read(conn)
 	if err != nil {
@@ -45,7 +45,7 @@ func StartUpServer(ln net.Listener) ([32]byte, [32]byte, error) {
 func main() {
 	// Creates Net Listener
 	var port string = ":8080"
-	ln, err := communication.NetListen(port)
+	ln, err := communication.TcpNetListen(port)
 	if err != nil {
 		fmt.Println(err)
 		return

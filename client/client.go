@@ -14,7 +14,7 @@ func StartUpClient(address string) ([32]byte, [32]byte, error) {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	conn, err := communication.NetDial(address)
+	conn, err := communication.TcpNetDial(address)
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
