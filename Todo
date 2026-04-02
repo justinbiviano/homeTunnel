@@ -1,0 +1,1 @@
+communication.Read uses a 32 bit buf needs to be changed as this is for key exchange when it needs to be the full udp and tcp size or around 1420 bytes. This also needs to be done for the communication.Send.
