@@ -2,7 +2,7 @@ package communication
 
 import "net"
 
-func Read(conn net.Conn) ([32]byte, error) {
+func KeyRead(conn net.Conn) ([32]byte, error) {
 	// Read TCP from Conn
 	var buf [32]byte
 	_, err := conn.Read(buf[:])
@@ -12,7 +12,22 @@ func Read(conn net.Conn) ([32]byte, error) {
 	return buf, nil
 }
 
-func Send(conn net.Conn, message [32]byte) error {
+func KeySend(conn net.Conn, message [32]byte) error {
+	// Send bytes over TCP from CONN
+	_, err := conn.Write(message[:])
+	return err
+}
+
+func Read(conn net.Conn) ([]byte, error) {
+	var buf [1420]byte
+	n, err := conn.Read(buf[:])
+	if err != nil {
+		return nil, err
+	}
+	return buf[:n], nil
+}
+
+func Send(conn net.Conn, message []byte) error {
 	// Send bytes over TCP from CONN
 	_, err := conn.Write(message[:])
 	return err

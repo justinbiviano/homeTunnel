@@ -19,12 +19,12 @@ func StartUpClient(address string) ([32]byte, [32]byte, error) {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	err = communication.Send(conn, public)
+	err = communication.KeySend(conn, public)
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
 
-	recived, err := communication.Read(conn)
+	recived, err := communication.KeyRead(conn)
 	if err != nil {
 		return [32]byte{}, [32]byte{}, err
 	}
